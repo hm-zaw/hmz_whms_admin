@@ -8,30 +8,34 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-    protected $table = 'products';
+
     protected $fillable = [
         'item_name',
         'brand',
         'category',
-        'description',
+        'product_segment',
+        'product_serial_number',
+        'unit_price_mmk',
         'product_image_url',
-        'product_serial_number'
     ];
 
-    public function salesInvoices()
+    protected static function boot()
     {
-        return $this->hasMany(SalesInvoice::class, 'product_id');
-    }
+        parent::boot();
 
-    public function stockRecords()
-    {
-        return $this->hasMany(StockRecord::class, 'product_id');
-    }
+        static::created(function ($product) {
+            $systemUserId = SystemUser::first()?->id ?? 1; // Get first available user, fallback to 1
 
-    public function getImageUrlAttribute()
-    {
-        return $this->product_image_url
-            ? asset('storage/' . $this->product_image_url)
-            : asset('images/default-product.png'); // Default image fallback
+            Stock::create([
+                'record_date' => now()->toDateString(),
+                'product_id' => $product->id,
+                'warehouse_branch' => 'Dawbon',
+                'opening_balance' => 0,
+                'received' => 0,
+                'dispatched' => 0,
+                'closing_balance' => 0,
+                'system_users_id' => $systemUserId,
+            ]);
+        });
     }
 }

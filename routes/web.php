@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Member;
 use Illuminate\Support\Arr;
@@ -12,18 +13,22 @@ Route::get('/adm-dsh', function () {
 });
 
 Route::get('/customers', function (){
-   return view('adm_customers', [
-    "greeting" => "This is customer page"
-   ]);
+   return view('adm_customers');
 });
 
-Route::get('/products', function (){
-    return view('adm_products', [
-        "greeting" => "This is product page"
-    ]);
-});
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::patch('/products/update', [ProductController::class, 'update'])->name('products.update');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::post('/products', [ProductController::class, 'store'])->name('product.store');
 
-Route::get('/inventory', function (){
+Route::get('/customers', [ShopController::class, 'showCustomers']) -> name('customers.show');
+Route::delete('/customers/{id}', [ShopController::class, 'destroy']) -> name('customers.destroy');
+Route::patch('/customers/update', [ShopController::class, 'update']) -> name('customers.update');
+Route::post('/customers', [ShopController::class, 'store']) -> name('customers.store');
+
+// Route::get('/inventory', [InventoryController::class, 'data-show']) -> name('inventory.show');
+
+Route::get('/inventory', function () {
     return view('adm_inventory', [
         "greeting" => "This is inventory page"
     ]);
@@ -34,8 +39,6 @@ Route::get('/orders', function (){
         "greeting" => "This is orders page"
     ]);
 });
-
-
 
 Route::get('/members', function (){
     return view('members', [
@@ -52,4 +55,3 @@ Route::get('/members/{id}', function($id)  {
     ]);
 });
 
-Route::post('/products', [ProductController::class, 'store'])->name('product.store');

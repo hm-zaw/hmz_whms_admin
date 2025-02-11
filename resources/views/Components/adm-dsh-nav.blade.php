@@ -256,7 +256,7 @@
 </div>
 
 <!-- Main content container -->
-<div class="w-full mt-4 ms-4 lg:ps-[260px]">
+<div class="min-w-screen mt-4 ms-4 lg:ps-[260px] pe-4">
     {{ $slot }}
 </div>
 <!-- JS PLUGINS -->

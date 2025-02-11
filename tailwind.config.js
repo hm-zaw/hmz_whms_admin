@@ -14,6 +14,9 @@ export default {
             fontFamily: {
                 'poppins': ['Poppins', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                'poutsa': '#2563eb',
+            }
         },
     },
     plugins: [],
