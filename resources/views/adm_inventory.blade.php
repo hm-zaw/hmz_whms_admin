@@ -1,4 +1,3 @@
-
 <x-adm-dsh-nav>
     <div class="relative overflow-x-auto sm:rounded-lg">
         <table id="resizable-table" class="w-full my-4 text-sm text-left rtl:text-right text-gray-500 border-collapse">

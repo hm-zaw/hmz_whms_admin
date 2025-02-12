@@ -244,6 +244,12 @@
                         </a>
                     </li>
 
+                    <li class="hs-accordion" id="account-accordion">
+                        <a href="/sales" class="{{ request() -> is("sales") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child">
+                            <i class="fa-regular fa-file-invoice"></i> Sales
+                        </a>
+                    </li>
+
                     <li class="absolute bottom-3">
                         <a href="/logout" type="submit" class="hs-accordion-toggle w-full text-start flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-none focus:bg-gray-100" aria-expanded="true" aria-controls="projects-accordion-child">
                             <i class="fa-solid fa-chevron-left"></i> <span class="ml-1 text-red-500">Logout </span>

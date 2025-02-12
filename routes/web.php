@@ -55,3 +55,43 @@ Route::get('/members/{id}', function($id)  {
     ]);
 });
 
+// Below Code are Submitted By Shota-Kun
+
+// Sales URL For Get
+Route::get('/sales', function (){
+    return view('adm_invoices', [
+        "greeting" => "This is orders page"
+    ]);
+});
+
+//Routes For CSV.DOWNLOAD
+use App\Http\Controllers\StockController;
+Route::get('/download-stock-csv', [StockController::class, 'downloadCSV'])->name('stock.downloadCSV');
+
+// Routes For ChartController
+use App\Http\Controllers\ChartController;
+Route::get('/adm-dsh', [ChartController::class, 'index'])->name('admin.chart');
+
+// Getting the Stock Data Controller
+use App\Http\Controllers\StockDataController;
+
+// Define a route for fetching the stock data
+Route::get('/get-stock-data', [StockDataController::class, 'getStockData']);
+
+// Sales Invoices Showing Off
+use App\Http\Controllers\SaleController;
+
+Route::get('/invoice/{invoiceNo}', [SaleController::class, 'getInvoiceDetails']);
+Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+Route::get('invoice/details/{invoice_no}', [SaleController::class, 'showInvoiceDetails'])->name('invoice.details');
+
+// Driver Login Blade
+Route::get('/driver_login', function () {
+    return view('driver_login');
+});
+
+// Driver Dashboard Blade
+Route::get('/driver_dashboard', function () {
+    return view('driver_dashboard');
+});
+

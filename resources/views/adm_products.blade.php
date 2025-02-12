@@ -313,7 +313,7 @@
                         </div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">{{ $product->brand }}</td>
-                    <td class="px-4 py-4 whitespace-nowrap">{{ $product->created_at->format('Y-m-d') }}</td>
+                    <td class="px-4 py-4 whitespace-nowrap">{{ $product->created_at ? $product->created_at->format('Y-m-d') : 'N/A' }}</td>
 
                     <td class="px-4 py-4 whitespace-nowrap">{{ $product->product_serial_number }}</td>
                     <td class="px-4 py-4 whitespace-nowrap">
