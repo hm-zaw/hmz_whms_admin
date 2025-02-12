@@ -16,11 +16,11 @@ class ProductController
                 'category' => 'required|string',
                 'about' => 'nullable|string',
                 'file_upload' => 'nullable|image|max:20480',
+                'price' => 'required|string',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             dd($e->errors());
         }
-
 
         // Get the latest product's serial number
         $latestProduct = Product::orderBy('id', 'desc')->first();
@@ -46,7 +46,8 @@ class ProductController
             'brand' => $input['brand'],
             'category' => $input['category'],
             'product_segment' => $input['about'],
-            'product_image_url' => $input['product_image_url']
+            'product_image_url' => $input['product_image_url'],
+            'unit_price_mmk' => $input['price']
         ]);
 
         return redirect()->back()->with('success', 'Product added successfully.');
@@ -55,7 +56,7 @@ class ProductController
     public function index()
     {
         // Retrieve the required product fields
-        $products = Product::select('id', 'item_name', 'brand', 'category', 'product_segment', 'product_serial_number', 'product_image_url', 'created_at')->get();
+        $products = Product::select('id', 'item_name', 'brand', 'category', 'product_segment', 'product_serial_number', 'unit_price_mmk', 'product_image_url', 'created_at')->get();
 
         // Pass the products data to the view
         return view('adm_products', [

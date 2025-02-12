@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
@@ -26,32 +27,12 @@ Route::delete('/customers/{id}', [ShopController::class, 'destroy']) -> name('cu
 Route::patch('/customers/update', [ShopController::class, 'update']) -> name('customers.update');
 Route::post('/customers', [ShopController::class, 'store']) -> name('customers.store');
 
-// Route::get('/inventory', [InventoryController::class, 'data-show']) -> name('inventory.show');
-
-Route::get('/inventory', function () {
-    return view('adm_inventory', [
-        "greeting" => "This is inventory page"
-    ]);
-});
+Route::get('/inventory', [InventoryController::class, 'data_show']) -> name('inventory.show');
+Route::patch('/inventory/update', [InventoryController::class, 'data_update']) -> name('inventory.update');
 
 Route::get('/orders', function (){
     return view('adm_orders', [
         "greeting" => "This is orders page"
-    ]);
-});
-
-Route::get('/members', function (){
-    return view('members', [
-        "members" => Member::all()
-    ]);
-});
-
-Route::get('/members/{id}', function($id)  {
-
-    $member = Member::find($id);
-
-    return view('member', [
-        "member" => $member
     ]);
 });
 

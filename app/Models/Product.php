@@ -26,7 +26,7 @@ class Product extends Model
         static::created(function ($product) {
             $systemUserId = SystemUser::first()?->id ?? 1; // Get first available user, fallback to 1
 
-            Stock::create([
+            StockRecord::create([
                 'record_date' => now()->toDateString(),
                 'product_id' => $product->id,
                 'warehouse_branch' => 'Dawbon',

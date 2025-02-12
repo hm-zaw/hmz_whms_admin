@@ -44,101 +44,114 @@
 @vite('resources/css/card-flip.css')
 
 <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-1/2 h-[500px] overflow-y-auto">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 max-h-[90vh] overflow-y-auto">
         <h2 class="font-semibold font-poppins text-gray-800"> Add A Product </h2>
         <p class="text-gray-500 text-xs mb-6">Fill in the details below to add a new product.</p>
 
-        <form method="POST" action="{{ route('product.store') }}" enctype="multipart/form-data">
+        <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @method('post')
-            <div class="col-span-full">
-                <label for="cover-photo" class="block text-sm font-medium text-gray-900 font-poppins">Product photo</label>
-                <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                    <div class="text-center">
-                        <!-- Image Preview Container -->
-                        <div id="image-preview" class="hidden">
-                            <img id="preview-image" src="#" alt="Preview" class="mx-auto size-24 object-cover rounded-lg" />
+            @method('POST')
+
+            <div class="flex flex-row gap-x-6 w-full">
+                <div id="first-div" class="w-1/2 flex flex-col h-[50vh]">
+                    <label for="cover-photo" class="block text-sm font-medium text-gray-900 font-poppins">Product photo</label>
+                    <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                        <div class="text-center">
+                            <!-- Image Preview Container -->
+                            <div id="image-preview" class="hidden">
+                                <img id="preview-image" src="#" alt="Preview" class="mx-auto w-60 h-48 object-cover rounded-lg" />
+                            </div>
+                            <!-- Default SVG Icon -->
+                            <svg id="default-icon" class="mx-auto size-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" />
+                            </svg>
+                            <!-- Upload Text -->
+                            <div class="mt-4 flex text-sm/6 text-gray-600">
+                                <label for="file_upload" class="relative cursor-pointer rounded-md bg-white hover:text-indigo-500">
+                                    <span class="text-sm">Upload a file or drag and drop</span>
+                                    <input id="file_upload" name="file_upload" type="file" class="sr-only" accept="image/*">
+                                </label>
+                            </div>
+                            <p class="text-xs text-gray-600">PNG, JPG, GIF up to 10MB</p>
                         </div>
-                        <!-- Default SVG Icon -->
-                        <svg id="default-icon" class="mx-auto size-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" />
-                        </svg>
-                        <!-- Upload Text -->
-                        <div class="mt-4 flex text-sm/6 text-gray-600">
-                            <label for="file_upload" class="relative cursor-pointer rounded-md bg-white hover:text-indigo-500">
-                                <span class="text-sm">Upload a file or drag and drop</span>
-                                <input id="file_upload" name="file_upload" type="file" class="sr-only" accept="image/*">
-                            </label>
+                    </div>
+                    <div class="flex-1 mt-5">
+                        <label for="price" class="block mb-2 text-sm font-medium text-gray-900">Price</label>
+                        <input type="text" name="price" class="bg-gray-50 border border-gray-300 text-gray-900 text-[13px] rounded-lg block w-full p-2.5" placeholder="$xxxx" required />
+                    </div>
+                </div>
+                <div id="sec-div" class="w-2/3 ">
+                    <div class="mt-2 w-full flex flex-row gap-x-3">
+                        <div class="flex-1">
+                            <label for="edit-name" class="block mb-2 text-sm font-medium text-gray-900">Model name</label>
+                            <input type="text" id="edit-name" name="model" class="bg-gray-50 border border-gray-300 text-gray-900 text-[13px] rounded-lg block w-full p-2.5" placeholder="ABC" required />
                         </div>
-                        <p class="text-xs text-gray-600">PNG, JPG, GIF up to 10MB</p>
+                        <div class="flex-1">
+                            <label for="edit-brand" class="block mb-2 text-sm font-medium text-gray-900">Brand name</label>
+                            <input type="text" id="edit-brand" name="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-[13px] rounded-lg block w-full p-2.5" placeholder="ABC" required />
+                        </div>
+                        <div class="flex-1">
+                            <label for="edit-category" class="block mb-2 text-sm font-medium text-gray-900">Category</label>
+                            <select id="edit-category" name="category" class="bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5">
+                                <option value="" disabled selected>Select a category</option>
+                                <option value="Laptop">Laptop</option>
+                                <option value="Phone">Desktop PC</option>
+                                <option value="Gadget">Monitor</option>
+                                <option value="Accessories">Accessories</option>
+                                <option value="Storage Device">Storage Device</option>
+                                <option value="Networking Device">Networking Device</option>
+                                <option value="Printer">Printer</option>
+                                <option value="Software">Software</option>
+                                <option value="Graphic Card">Graphic Card</option>
+                                <option value="Memory">Memory</option>
+                                <option value="Power Supply">Power Supply</option>
+                                <option value="PC Case">PC Case</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-span-full">
+                        <label for="about" class="block mb-2 text-sm font-medium text-gray-900 mt-4">About</label>
+                        <div class="mt-2">
+                            <textarea name="about" id="edit-segment" rows="6" class="bg-gray-50 border border-gray-300 text-gray-900 text-[13px] rounded-lg block w-full p-4 placeholder:text-gray-400"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Rest of the form -->
-            <div class="mt-4 w-full flex flex-row gap-x-6">
-                <div class="flex-1">
-                    <label for="model" class="block mb-2 text-sm font-medium text-gray-900">Model name</label>
-                    <input type="text" id="model" name="model" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="John" required />
-                </div>
-                <div class="flex-1">
-                    <label for="brand" class="block mb-2 text-sm font-medium text-gray-900">Brand name</label>
-                    <input type="text" id="brand" name="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" placeholder="John" required />
-                </div>
-                <div class="flex-1">
-                    <label for="category" class="block mb-2 text-sm font-medium text-gray-900">Category</label>
-                    <select id="category" name="category" class="bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5">
-                        <option value="" disabled selected>Select a category</option>
-                        <option value="Laptop">Laptop</option>
-                        <option value="Phone">Desktop PC</option>
-                        <option value="Gadget">Monitor</option>
-                        <option value="Accessories">Accessories</option>
-                        <option value="Storage Device">Storage Device</option>
-                        <option value="Networking Device">Networking Device</option>
-                        <option value="Printer">Printer</option>
-                        <option value="Software">Software</option>
-                        <option value="Graphic Card">Graphic Card</option>
-                        <option value="Memory">Memory</option>
-                        <option value="Power Supply">Power Supply</option>
-                        <option value="PC Case">PC Case</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-span-full mt-4">
-                <label for="about" class="block mb-2 text-sm font-medium text-gray-900">About</label>
-                <div class="mt-2">
-                    <textarea name="about" id="about" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 sm:text-sm"></textarea>
-                </div>
-            </div>
-
-            <div class="flex justify-end mt-7 gap-x-4">
-                <button id="closeModalButton" type="button" class="text-sm bg-gray-300 text-white px-6 py-2 rounded-lg hover:bg-gray-400 transition duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75">
-                    Close
-                </button>
-                <button type="submit" class="text-sm bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
-                    Submit
-                </button>
-            </div>
-        </form>
-
         <script>
             document.getElementById('file_upload').addEventListener('change', function(event) {
-                const file = event.target.files[0];
-                if (file) {
+                const fileInput = event.target;
+                const previewContainer = document.getElementById('image-preview');
+                const previewImage = document.getElementById('preview-image');
+                const defaultIcon = document.getElementById('default-icon');
+
+                if (fileInput.files && fileInput.files[0]) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        // Hide the default icon
-                        document.getElementById('default-icon').classList.add('hidden');
-                        // Show the image preview
-                        document.getElementById('image-preview').classList.remove('hidden');
-                        document.getElementById('preview-image').setAttribute('src', e.target.result);
+                        // Update image preview
+                        previewImage.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                        defaultIcon.classList.add('hidden');
                     };
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    // Reset to default state if no file is selected
+                    previewImage.src = '#';
+                    previewContainer.classList.add('hidden');
+                    defaultIcon.classList.remove('hidden');
                 }
             });
         </script>
 
+        <div class="flex justify-end mt-7 gap-x-4">
+            <button id="closeModalButton" type="button" class="text-sm bg-gray-300 text-white px-6 py-2 rounded-lg hover:bg-gray-400 transition duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75">
+                Close
+            </button>
+            <button type="submit" class="text-sm bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                Submit
+            </button>
+        </div>
+        </form>
     </div>
 </div>
 
@@ -255,46 +268,13 @@
     </div>
     <hr class="mt-3">
 
-    <div class="w-full flex flex-wrap justify-between mt-4 gap-x-4">
-        <a href="#" class="flex-1 min-w-[150px] top_btns whitespace-nowrap flex items-center gap-x-3">
-            <i class="fa-light fa-boxes-stacked"></i>
-            <span class="hover:font-semibold">Published</span>
-            <span class="hover-underline"></span>
-        </a>
-
-        <a href="#" class="flex-1 min-w-[150px] top_btns whitespace-nowrap flex items-center gap-x-3">
-            <i class="fa-duotone fa-regular fa-pen-ruler"></i>
-            <span>Draft</span>
-            <span class="hover-underline"></span>
-        </a>
-
-        <a href="#" class="flex-1 min-w-[150px] top_btns whitespace-nowrap flex items-center gap-x-3">
-            <i class="fa-regular fa-eye-slash"></i>
-            <span>Hidden</span>
-            <span class="hover-underline"></span>
-        </a>
-
-        <a href="#" class="flex-1 min-w-[150px] top_btns whitespace-nowrap flex items-center gap-x-3">
-            <i class="fa-regular fa-fire"></i>
-            <span>Hot Items</span>
-            <span class="hover-underline"></span>
-        </a>
-
-        <a href="#" class="flex-1 min-w-[150px] top_btns whitespace-nowrap flex items-center gap-x-3">
-            <i class="fa-solid fa-layer-minus"></i>
-            <span>Out of Stock</span>
-            <span class="hover-underline"></span>
-        </a>
-    </div>
-    <hr class="mt-4">
-
     <div class="relative overflow-x-auto sm:rounded-lg">
         <table class="w-full bg-gray-50 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-auto">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr class="text-center">
                 <th scope="col" class="px-4 py-3 min-w-[200px] text-left">Product Name</th>
                 <th scope="col" class="px-4 py-3 min-w-[100px]">Brand</th>
-                <th scope="col" class="px-4 py-3 min-w-[120px]">Entry Date</th>
+                <th scope="col" class="px-4 py-3 min-w-[120px]">Price</th>
                 <th scope="col" class="px-4 py-3 min-w-[150px]">Serial Number</th>
                 <th scope="col" class="px-4 py-3 min-w-[80px] text-center">Actions</th>
             </tr>
@@ -313,7 +293,7 @@
                         </div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">{{ $product->brand }}</td>
-                    <td class="px-4 py-4 whitespace-nowrap">{{ $product->created_at ? $product->created_at->format('Y-m-d') : 'N/A' }}</td>
+                    <td class="px-4 py-4 whitespace-nowrap">{{ $product->unit_price_mmk }}</td>
 
                     <td class="px-4 py-4 whitespace-nowrap">{{ $product->product_serial_number }}</td>
                     <td class="px-4 py-4 whitespace-nowrap">
