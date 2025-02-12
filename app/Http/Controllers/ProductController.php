@@ -69,18 +69,19 @@ class ProductController
     {
         try {
             $input = $request->validate([
-                'product_id' => 'required|integer',
+                'id' => 'required|integer',
                 'model' => 'required|string',
                 'brand' => 'required|string',
                 'category' => 'required|string',
                 'about' => 'nullable|string',
                 'file_upload' => 'nullable|image|max:20480',
+                'price' => 'required|string',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             dd($e->errors());
         }
 
-        $product = Product::findOrFail($input['product_id']);
+        $product = Product::findOrFail($input['id']);
 
         if ($request->hasFile('file_upload')) {
             $imagePath = $request->file('file_upload')->store('uploads', 'public');
@@ -94,7 +95,8 @@ class ProductController
             'brand' => $input['brand'],
             'category' => $input['category'],
             'product_segment' => $input['about'],
-            'product_image_url' => $input['product_image_url']
+            'product_image_url' => $input['product_image_url'],
+            'unit_price_mmk' => $input['price']
         ]);
 
         return redirect()->back()->with('success', 'Product updated successfully.');
