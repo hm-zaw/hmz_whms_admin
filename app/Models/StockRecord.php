@@ -29,4 +29,9 @@ class StockRecord extends Model
     {
         return $this->belongsTo(SystemUser::class, 'system_users_id');
     }
+
+    public function product_id()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

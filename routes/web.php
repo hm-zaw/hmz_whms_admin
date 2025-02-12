@@ -6,6 +6,10 @@ use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Member;
 use Illuminate\Support\Arr;
+use App\Http\Controllers\SystemNotificationController;
+use Illuminate\Support\Facades\DB;
+
+DB::enableQueryLog();
 
 Route::get('/adm-dsh', function () {
     return view('adm_dashboard', [
@@ -75,4 +79,7 @@ Route::get('/driver_login', function () {
 Route::get('/driver_dashboard', function () {
     return view('driver_dashboard');
 });
+
+// System Notification Route
+Route::get('/system_notification', [SystemNotificationController::class, 'index'])->name('system.notification');
 

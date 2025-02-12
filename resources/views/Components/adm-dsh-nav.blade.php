@@ -1,5 +1,7 @@
 @php
     use Carbon\Carbon;
+    use Illuminate\Support\Facades\DB;
+    use App\Models\StockRecord;
 @endphp
 
 <!DOCTYPE html>
@@ -106,9 +108,85 @@
                     <span class="sr-only">Search</span>
                 </button>
 
-                <div>
+                <div class="hs-dropdown relative inline-flex">
+                    <button id="notification-dropdown" type="button" class="relative inline-flex items-center text-gray-600 hover:text-gray-700 p-2">
+                        <i class="fa-regular fa-bell text-xl"></i>
+                        @php
+                            $currentDate = '2024-12-31';
+                            $lowStockCount = DB::table('stock_records as sr1')
+                                ->whereNotExists(function($query) {
+                                    $query->from('stock_records as sr2')
+                                        ->whereRaw('sr1.product_id = sr2.product_id')
+                                        ->whereRaw('sr1.record_date < sr2.record_date');
+                                })
+                                ->where('sr1.record_date', '<=', $currentDate)
+                                ->where('sr1.closing_balance', '<', 2)
+                                ->count();
+                        @endphp
+                        @if($lowStockCount > 0)
+                            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                                {{ $lowStockCount }}
+                            </span>
+                        @endif
+                    </button>
 
+                    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[350px] bg-white shadow-md rounded-lg mt-2" aria-labelledby="notification-dropdown">
+                        <div class="p-4 border-b border-gray-200">
+                            <h3 class="font-semibold text-gray-800">Notifications</h3>
+                        </div>
+                        
+                        <div class="max-h-[350px] overflow-y-auto">
+                            @php
+                                $lowStockItems = StockRecord::with('product')
+                                    ->select('stock_records.*')
+                                    ->join(DB::raw('(
+                                        SELECT product_id, MAX(record_date) as latest_date
+                                        FROM stock_records
+                                        WHERE record_date <= ?
+                                        GROUP BY product_id
+                                    ) latest_records'), function($join) {
+                                        $join->on('stock_records.product_id', '=', 'latest_records.product_id')
+                                         ->on('stock_records.record_date', '=', 'latest_records.latest_date');
+                                    })
+                                    ->where('closing_balance', '<', 2)
+                                    ->setBindings([$currentDate])
+                                    ->get();
+                            @endphp
+
+                            @forelse($lowStockItems as $item)
+                                <div class="p-4 border-b border-gray-200">
+                                    <div class="flex items-start gap-x-3">
+                                        <i class="fa-regular fa-triangle-exclamation text-red-500 mt-1"></i>
+                                        <div class="flex-1">
+                                            <h4 class="text-sm font-semibold text-red-700">Low Stock Alert</h4>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                Item "{{ $item->product->name }}" is running low ({{ $item->closing_balance }} remaining)
+                                            </p>
+                                            <a href="{{ route('inventory.show') }}" 
+                                               class="mt-2 inline-flex items-center gap-x-1 text-sm font-semibold text-red-600 hover:text-red-700">
+                                                Manage Stock
+                                                <i class="fa-regular fa-arrow-right text-sm"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="p-4 text-center text-gray-500">
+                                    No new notifications
+                                </div>
+                            @endforelse
+                        </div>
+
+                        @if($lowStockCount > 0)
+                            <div class="p-4 border-t border-gray-200">
+                                <a href="{{ route('system.notification') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                    View All Notifications
+                                </a>
+                            </div>
+                        @endif
+                    </div>
                 </div>
+
                 <div class="flex flex-col items-end mr-40">
                     <span class="text-sm font-medium text-gray-800">Hey, Kevin!</span>
                     <span class="text-xs text-gray-500">
@@ -247,6 +325,12 @@
                     <li class="hs-accordion" id="account-accordion">
                         <a href="/sales" class="{{ request() -> is("sales") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child">
                             <i class="fa-regular fa-file-invoice"></i> Sales
+                        </a>
+                    </li>
+
+                    <li class="hs-accordion" id="account-accordion">
+                        <a href="/system_notification" class="{{ request() -> is("system_notification") ? "bg-blue-50 text-blue-700 focus:outline-none focus:bg-customTeal font-semibold" :  "text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-customTeal"}} hs-accordion-toggle w-full text-start flex items-center gap-x-4 py-2 px-2.5 text-sm rounded-lg" aria-expanded="true" aria-controls="users-accordion-child">
+                            <i class="fa-regular fa-bell"></i> System Notification
                         </a>
                     </li>
 

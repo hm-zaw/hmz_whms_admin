@@ -4,11 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class StockRecordsSeeder extends Seeder
 {
     public function run()
     {
+        DB::table('stock_records')->truncate();
+
         DB::table('stock_records')->insert([
             [
                 'record_date' => '2024-12-30',
@@ -19,6 +22,8 @@ class StockRecordsSeeder extends Seeder
                 'dispatched' => 3,
                 'closing_balance' => 2,
                 'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'record_date' => '2024-12-31',
@@ -29,6 +34,8 @@ class StockRecordsSeeder extends Seeder
                 'dispatched' => 1,
                 'closing_balance' => 5,
                 'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'record_date' => '2024-12-30',
@@ -39,6 +46,8 @@ class StockRecordsSeeder extends Seeder
                 'dispatched' => 5,
                 'closing_balance' => 1,
                 'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'record_date' => '2024-12-31',
@@ -49,6 +58,8 @@ class StockRecordsSeeder extends Seeder
                 'dispatched' => 4,
                 'closing_balance' => 4,
                 'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'record_date' => '2024-12-30',
@@ -59,6 +70,44 @@ class StockRecordsSeeder extends Seeder
                 'dispatched' => 7,
                 'closing_balance' => 4,
                 'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'record_date' => '2024-12-30',
+                'product_id' => 4,
+                'warehouse_branch' => 'Dawbon',
+                'opening_balance' => 10,
+                'received' => 0,
+                'dispatched' => 9,
+                'closing_balance' => 1,
+                'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'record_date' => '2024-12-11',
+                'product_id' => 5,
+                'warehouse_branch' => 'Dawbon',
+                'opening_balance' => 10,
+                'received' => 0,
+                'dispatched' => 9,
+                'closing_balance' => 1,
+                'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'record_date' => '2024-12-30',
+                'product_id' => 5,
+                'warehouse_branch' => 'Dawbon',
+                'opening_balance' => 1,
+                'received' => 4,
+                'dispatched' => 0,
+                'closing_balance' => 5,
+                'system_users_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
             ],
         ]);
     }
