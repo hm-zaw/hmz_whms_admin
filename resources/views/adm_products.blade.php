@@ -241,7 +241,7 @@
             <div class="flex flex-row gap-x-6 w-full">
                 <div id="first-div" class="w-1/2 flex flex-col h-[50vh]">
                     <img id="edit-product-image" alt="Preview" class="mx-auto w-60 h-48 object-cover rounded-lg" />
-                    
+
                     <!-- New File Input for Image Upload -->
                     <label class="flex cursor-pointer appearance-none justify-center mt-4 rounded-md border border-dashed border-gray-300 bg-white px-3 py-6 text-sm transition hover:border-gray-400 focus:border-solid focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75" tabindex="0">
                         <span for="photo-dropbox" class="flex items-center space-x-2">
@@ -258,7 +258,7 @@
                           </span>
                         <input id="photo-dropbox" type="file" name="file_upload" class="sr-only" accept="image/*" />
                     </label>
-                    
+
                     <div class="flex-1 mt-5">
                         <label for="price" class="block mb-2 text-sm font-medium text-gray-900">Price</label>
                         <input type="text" name="price" id="edit-product-price" class="bg-gray-50 border border-gray-300 text-gray-900 text-[13px] rounded-lg block w-full p-2.5" placeholder="$xxxx" required />

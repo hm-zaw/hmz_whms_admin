@@ -4,35 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\StockRecord;
-use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class SystemNotificationController extends Controller
 {
     public function index()
     {
-        $currentDate = '2024-12-31';
+        $currentDate = Carbon::today()->toDateString();
 
-        // Get latest stock records for each product
-        $latestRecords = DB::table('stock_records as sr1')
-            ->select('sr1.*')
-            ->whereNotExists(function($query) {
-                $query->from('stock_records as sr2')
-                    ->whereRaw('sr1.product_id = sr2.product_id')
-                    ->whereRaw('sr1.record_date < sr2.record_date');
+        // Get the latest stock records for each product
+        $latestRecords = StockRecord::select('stock_records.*')
+            ->whereIn('id', function ($query) use ($currentDate) {
+                $query->select(DB::raw('MAX(id)'))
+                    ->from('stock_records')
+                    ->where('record_date', '<=', $currentDate)
+                    ->groupBy('product_id');
             })
-            ->where('sr1.record_date', '<=', $currentDate)
-            ->where('sr1.closing_balance', '<', 2)
+            ->where('closing_balance', '<', 2)
+            ->with('product')
             ->get();
 
-        // Get the full records with product relationships
-        $lowStockItems = StockRecord::with('product')
-            ->whereIn('id', $latestRecords->pluck('id'))
-            ->get();
-
-        return view('adm_system_notification', [
-            'lowStockItems' => $lowStockItems
-        ]);
+        return view('adm_system_notification', ['lowStockItems' => $latestRecords]);
     }
 }
-

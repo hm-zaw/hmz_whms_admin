@@ -17,8 +17,8 @@ Route::get('/adm-dsh', function () {
     ]);
 });
 
-Route::get('/customers', function (){
-   return view('adm_customers');
+Route::get('/customers', function () {
+    return view('adm_customers');
 });
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -26,15 +26,15 @@ Route::patch('/products/update', [ProductController::class, 'update'])->name('pr
 Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 Route::post('/products', [ProductController::class, 'store'])->name('product.store');
 
-Route::get('/customers', [ShopController::class, 'showCustomers']) -> name('customers.show');
-Route::delete('/customers/{id}', [ShopController::class, 'destroy']) -> name('customers.destroy');
-Route::patch('/customers/update', [ShopController::class, 'update']) -> name('customers.update');
-Route::post('/customers', [ShopController::class, 'store']) -> name('customers.store');
+Route::get('/customers', [ShopController::class, 'showCustomers'])->name('customers.show');
+Route::delete('/customers/{id}', [ShopController::class, 'destroy'])->name('customers.destroy');
+Route::patch('/customers/update', [ShopController::class, 'update'])->name('customers.update');
+Route::post('/customers', [ShopController::class, 'store'])->name('customers.store');
 
-Route::get('/inventory', [InventoryController::class, 'data_show']) -> name('inventory.show');
-Route::patch('/inventory/update', [InventoryController::class, 'data_update']) -> name('inventory.update');
+Route::get('/inventory', [InventoryController::class, 'data_show'])->name('inventory.show');
+Route::patch('/inventory/update', [InventoryController::class, 'data_update'])->name('inventory.update');
 
-Route::get('/orders', function (){
+Route::get('/orders', function () {
     return view('adm_orders', [
         "greeting" => "This is orders page"
     ]);
@@ -43,7 +43,7 @@ Route::get('/orders', function (){
 // Below Code are Submitted By Shota-Kun
 
 // Sales URL For Get
-Route::get('/sales', function (){
+Route::get('/sales', function () {
     return view('adm_invoices', [
         "greeting" => "This is orders page"
     ]);
@@ -51,10 +51,12 @@ Route::get('/sales', function (){
 
 //Routes For CSV.DOWNLOAD
 use App\Http\Controllers\StockController;
+
 Route::get('/download-stock-csv', [StockController::class, 'downloadCSV'])->name('stock.downloadCSV');
 
 // Routes For ChartController
 use App\Http\Controllers\ChartController;
+
 Route::get('/adm-dsh', [ChartController::class, 'index'])->name('admin.chart');
 
 // Getting the Stock Data Controller
@@ -87,4 +89,3 @@ Route::get('/system_notification', [SystemNotificationController::class, 'index'
 Route::get('/track_deliveries', function () {
     return view('track_deliveries');
 });
-
