@@ -33,7 +33,6 @@ class DailyDeliveryListController extends Controller
             // Update delivery status if found
             $delivery->delivery_status = 'In Progress';
             $delivery->save();
-            dd($delivery);
 
             // Return success response
             return response()->json(['success' => true, 'message' => 'Status updated successfully']);

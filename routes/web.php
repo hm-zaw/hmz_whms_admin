@@ -111,7 +111,7 @@ Route::post('del-logout', [DeliveryAuthController::class, 'logout'])->name('driv
 use App\Http\Controllers\DailyDeliveryListController;
 
 Route::get('/del-dsh', [DailyDeliveryListController::class, 'index'])->name('del-dsh');
-Route::post('/update-status', [DailyDeliveryListController::class, 'updateDeliveryStatus'])->name('update.delivery.status');
+Route::post('/up-del', [DailyDeliveryListController::class, 'updateDeliveryStatus'])->name('updateDel');
 Route::get('/delivery/messages', [DailyDeliveryListController::class, 'messages'])->name('delivery.messages');
 
 //Route::post('/assign-deliveries', [DeliveryManController::class, 'assignDeliveries']);

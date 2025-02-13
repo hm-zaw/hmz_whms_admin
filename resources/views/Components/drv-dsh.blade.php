@@ -63,6 +63,7 @@
 <script>
     let currentDeliveryIndex = null;
     let currentDeliveryId = null;
+    let updateDeliveryStatusRoute = "{{ route('updateDel') }}";
     let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     function openFirstModal(index, name, address, phone, deliveryId) {
@@ -89,7 +90,7 @@
         // Get CSRF token from the meta tag
         console.log("CSRF Token:", csrfToken);
 
-        fetch("{{ route('update.delivery.status') }}", {
+        fetch(updateDeliveryStatusRoute, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -98,27 +99,27 @@
             credentials: 'same-origin',
             body: JSON.stringify({ id: currentDeliveryId })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw new Error(err.message || "Failed to update status."); });
+                }
+                return response.json();
+            })
             .then(data => {
-                console.log(data);
+                console.log("Success:", data);
                 if (data.success) {
-                    // Update UI on successful status change
                     document.getElementById('status-' + currentDeliveryIndex).innerText = "Sent";
                     document.getElementById('status-' + currentDeliveryIndex).classList.replace('bg-red-500', 'bg-green-500');
-                    const sendButton = document.getElementById('btn-' + currentDeliveryIndex);
-                    sendButton.disabled = true;
-                    sendButton.classList.add('cursor-not-allowed');
+                    document.getElementById('btn-' + currentDeliveryIndex).disabled = true;
                     showToast("Message sent successfully!");
                 } else {
-                    // Show detailed error message from backend
                     alert("Error: " + (data.message || "Failed to update status. Please try again later."));
                 }
             })
             .catch(error => {
-                console.error("Error:", error);
+                console.error("Fetch Error:", error);
                 alert("An unexpected error occurred. Please try again later.");
             });
-
         closeModal();
     }
 
