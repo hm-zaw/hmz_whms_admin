@@ -19,38 +19,46 @@ class ProductController
                 'price' => 'required|string',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            dd($e->errors());
+            notify()->error('Validation failed. Please check your input.');
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
-        // Get the latest product's serial number
-        $latestProduct = Product::orderBy('id', 'desc')->first();
-        $newSerialNumber = 'PR0000001';
+        try {
+            // Get the latest product's serial number
+            $latestProduct = Product::orderBy('id', 'desc')->first();
+            $newSerialNumber = 'PR0000001';
 
-        if ($latestProduct && preg_match('/^PR(\d+)$/', $latestProduct->product_serial_number, $matches)) {
-            $lastNumber = (int) $matches[1];
-            $newSerialNumber = 'PR' . str_pad($lastNumber + 1, 7, '0', STR_PAD_LEFT);
+            if ($latestProduct && preg_match('/^PR(\d+)$/', $latestProduct->product_serial_number, $matches)) {
+                $lastNumber = (int) $matches[1];
+                $newSerialNumber = 'PR' . str_pad($lastNumber + 1, 7, '0', STR_PAD_LEFT);
+            }
+
+            $input['product_serial_number'] = $newSerialNumber;
+            $imagePath = null;
+
+            if ($request->hasFile('file_upload')) {
+                $imagePath = $request->file('file_upload')->store('uploads', 'public');
+            }
+
+            $input['product_image_url'] = $imagePath;
+
+            // Create new product
+            Product::create([
+                'product_serial_number' => $input['product_serial_number'],
+                'item_name' => $input['model'],
+                'brand' => $input['brand'],
+                'category' => $input['category'],
+                'product_segment' => $input['about'],
+                'product_image_url' => $input['product_image_url'],
+                'unit_price_mmk' => $input['price']
+            ]);
+
+            notify()->success('Product added successfully.');
+            return redirect()->back()->with('success', 'Product added successfully.');
+        } catch (\Exception $e) {
+            notify()->error('Failed to add product. Please try again.');
+            return redirect()->back()->with('error', 'Failed to add product. Please try again.');
         }
-
-        $input['product_serial_number'] = $newSerialNumber;
-        $imagePath = null;
-
-        if($request -> hasFile('file_upload')){
-            $imagePath = $request->file('file_upload')->store('uploads', 'public');
-        }
-
-        $input['product_image_url'] = $imagePath;
-        // Create new product
-        Product::create([
-            'product_serial_number' => $input['product_serial_number'],
-            'item_name' => $input['model'],
-            'brand' => $input['brand'],
-            'category' => $input['category'],
-            'product_segment' => $input['about'],
-            'product_image_url' => $input['product_image_url'],
-            'unit_price_mmk' => $input['price']
-        ]);
-
-        return redirect()->back()->with('success', 'Product added successfully.');
     }
 
     public function index()
@@ -78,28 +86,35 @@ class ProductController
                 'price' => 'required|string',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            dd($e->errors());
+            notify()->error('Validation failed. Please check your input.');
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
-        $product = Product::findOrFail($input['id']);
+        try {
+            $product = Product::findOrFail($input['id']);
 
-        if ($request->hasFile('file_upload')) {
-            $imagePath = $request->file('file_upload')->store('uploads', 'public');
-            $input['product_image_url'] = $imagePath;
-        } else {
-            $input['product_image_url'] = $product->product_image_url;
+            if ($request->hasFile('file_upload')) {
+                $imagePath = $request->file('file_upload')->store('uploads', 'public');
+                $input['product_image_url'] = $imagePath;
+            } else {
+                $input['product_image_url'] = $product->product_image_url;
+            }
+
+            $product->update([
+                'item_name' => $input['model'],
+                'brand' => $input['brand'],
+                'category' => $input['category'],
+                'product_segment' => $input['about'],
+                'product_image_url' => $input['product_image_url'],
+                'unit_price_mmk' => $input['price']
+            ]);
+
+            notify()->success('Product updated successfully.');
+            return redirect()->back()->with('success', 'Product updated successfully.');
+        } catch (\Exception $e) {
+            notify()->error('Update failed. Please try again.');
+            return redirect()->back()->with('error', 'Update failed. Please try again.');
         }
-
-        $product->update([
-            'item_name' => $input['model'],
-            'brand' => $input['brand'],
-            'category' => $input['category'],
-            'product_segment' => $input['about'],
-            'product_image_url' => $input['product_image_url'],
-            'unit_price_mmk' => $input['price']
-        ]);
-
-        return redirect()->back()->with('success', 'Product updated successfully.');
     }
 
     public function destroy($id)
@@ -108,10 +123,12 @@ class ProductController
 
         if ($product) {
             $product->delete();
-            return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+            notify()->success('Product deleted successfully.');
+            return redirect()->route('products.index');
         }
 
-        return redirect()->route('products.index')->with('error', 'Product not found.');
+        notify()->error('Product not found.');
+        return redirect()->route('products.index');
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StockRecord;
 use App\Models\PartnerShop;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class StockDataController extends Controller
@@ -11,7 +12,7 @@ class StockDataController extends Controller
     public function getStockData()
     {
         // Count all stock records (models)
-        $modelsCount = StockRecord::count();  // Count all rows in the stock_records table
+        $modelsCount = Product::count();  // Count all rows in the stock_records table
 
         // Count all partner shops (customers)
         $customersCount = PartnerShop::count();  // Count all rows in the partner_shops table

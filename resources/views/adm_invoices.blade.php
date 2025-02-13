@@ -1,10 +1,13 @@
 <x-adm-dsh-nav>
     <div class="bg-white rounded-xl shadow-lg p-8 w-full">
-        <h2 class="text-4xl font-bold text-gray-900 mb-6 tracking-wide flex items-center gap-2">
-            📊 <span>Sales Dashboard</span>
-        </h2>
+        <div class="text-lg font-semibold text-left rtl:text-right text-gray-900">
+            Sales Dashboard
+            <p class="my-1 text-xs font-normal text-gray-500 dark:text-gray-400">
+                This is the sales dashboard for the invoices.
+            </p>
+        </div>
 
-        <div class="mb-6 bg-gray-100 p-5 rounded-xl shadow-sm">
+        <div class="my-6 bg-gray-100 p-5 rounded-xl shadow-sm">
             <form action="{{ route('sales.index') }}" method="GET" class="flex flex-col sm:flex-row items-center gap-4">
                 <label for="date" class="text-lg font-medium text-gray-700">Select Date:</label>
                 <input type="date" name="date" value="{{ $selectedDate }}" class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 w-full sm:w-auto">
@@ -15,8 +18,10 @@
         </div>
 
         <div class="mt-8">
-            <h3 class="text-2xl font-semibold text-gray-800 mb-4">📅 Monthly Sales</h3>
-            <div class="overflow-hidden rounded-lg shadow-sm border border-gray-200">
+            <div class="text-lg font-semibold text-left rtl:text-right text-gray-900">
+                Monthly Sales
+            </div>
+            <div class="overflow-hidden mt-4 rounded-lg shadow-sm border border-gray-200">
                 <table class="w-full text-center text-gray-700">
                     <thead class="bg-gray-200 text-gray-700 text-sm uppercase">
                     <tr>

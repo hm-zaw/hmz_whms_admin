@@ -2,33 +2,36 @@
     <div class="container mx-auto p-6">
         <!-- Welcome Message Section -->
         <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 rounded-lg shadow-md text-center text-black">
-            <h1 class="text-3xl font-bold">Welcome to the Admin Dashboard</h1>
-            <p class="text-lg mt-2">Manage your models, customers, service centers, warehouse branches, and reports with ease.</p>
+            <h1 class="text-2xl font-bold">WELCOME TO ADMIN DASHBOARD</h1>
+            <p class="text-sm mt-2">Manage your models, customers, service centers, warehouse branches, and reports with ease.</p>
         </div>
 
         <!-- Cards Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
             @foreach ([
-                ['title' => 'Models', 'icon' => 'fas fa-cogs', 'count' => 'models-count', 'bg' => 'bg-blue-500'],
-                ['title' => 'Customers', 'icon' => 'fas fa-users', 'count' => 'customers-count', 'bg' => 'bg-green-500'],
-                ['title' => 'Service Centers', 'icon' => 'fas fa-tools', 'count' => 'service-centers-count', 'bg' => 'bg-yellow-500'],
-                ['title' => 'Branches', 'icon' => 'fas fa-warehouse', 'count' => 'warehouse-branches-count', 'bg' => 'bg-red-500']
+                ['title' => 'Products', 'icon' => 'fas fa-cogs', 'count' => 'models-count', 'bg' => 'bg-blue-400'],
+                ['title' => 'Customers', 'icon' => 'fas fa-users', 'count' => 'customers-count', 'bg' => 'bg-green-400'],
+                ['title' => 'Service Centers', 'icon' => 'fas fa-tools', 'count' => 'service-centers-count', 'bg' => 'bg-yellow-400'],
+                ['title' => 'Branches', 'icon' => 'fas fa-warehouse', 'count' => 'warehouse-branches-count', 'bg' => 'bg-indigo-400']
             ] as $card)
                 <div class="p-6 rounded-lg shadow-md {{ $card['bg'] }} text-white text-center transform transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-6 hover:-rotate-6 hover:shadow-lg cursor-pointer">
                     <i class="{{ $card['icon'] }} text-4xl"></i>
                     <h3 class="text-xl font-bold mt-2">{{ $card['title'] }}</h3>
-                    <p class="text-3xl font-semibold mt-1" id="{{ $card['count'] }}">Loading...</p>
+                    <p class="text-lg font-semibold mt-1" id="{{ $card['count'] }}">Loading...</p>
                 </div>
             @endforeach
         </div>
 
         <!-- Monthly Data & Predictions -->
         <div class="bg-white shadow-lg rounded-lg p-8 mt-6">
-            <h1 class="text-center text-3xl font-extrabold text-black mb-6 tracking-wide bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 rounded-lg shadow-md animate__animated animate__fadeInDown">
-                📊 Monthly Data & Predictions
-            </h1>
+            <div class="text-lg font-semibold text-left rtl:text-right text-gray-900">
+                Monthly Data & Predictions
+                <p class="my-1 text-xs font-normal text-gray-500 dark:text-gray-400">
+                    This is the monthly data and predictions for the products.
+                </p>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center w-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center w-full mt-4">
                 <!-- First Chart Container -->
                 <div class="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md transform transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg cursor-pointer">
                     <h2 class="text-center text-xl font-semibold text-black mb-4 p-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-md shadow">

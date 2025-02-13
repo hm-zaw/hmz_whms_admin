@@ -47,6 +47,8 @@ class ShopController
             'contact_primary' => $input['contact']
         ]);
 
+        notify()->success('Shop updated successfully.');
+
         return redirect()->back()->with('success', 'Product updated successfully.');
     }
 
@@ -59,6 +61,8 @@ class ShopController
             return redirect()->route('customers.show')->with('success', 'Shop deleted successfully.');
         }
 
+        notify()->error('Shop not found.');
+
         return redirect()->route('products.index')->with('error', 'Product not found.');
     }
 
@@ -69,11 +73,16 @@ class ShopController
                 'address' => 'required|string',
                 'township' => 'required|string',
                 'region' => 'nullable|string',
-                'contact' => 'nullable|string',
+                'contact' => 'nullable|string|min:8|max:11',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            dd($e->errors());
+            notify()->error('Validation failed. Please check your input.');
+            if ($e->errors()['contact'] ?? false) {
+                notify()->error('Contact number must be between 8 and 11 characters.');
+            }
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
+
         $input['password'] = Hash::make('pwd1234');
         // Create new product
         PartnerShop::create([
@@ -84,6 +93,8 @@ class ShopController
             'partner_shops_region' => $input['region'],
             'contact_primary' => $input['contact']
         ]);
+
+        notify()->success('Shop added successfully.');
 
         return redirect()->back()->with('success', 'Product added successfully.');
     }

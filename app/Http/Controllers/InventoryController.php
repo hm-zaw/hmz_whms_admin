@@ -133,6 +133,8 @@ class InventoryController
                     'updated_at' => now(),
                 ]);
 
+                notify()->success('Stock updated successfully.');
+
                 return redirect()->back()->with('success', 'Stock updated successfully.');
             } else {
                 // If the record's date is today, update the 'received' value
@@ -146,6 +148,9 @@ class InventoryController
                         'closing_balance' => $closingBalance,
                         'updated_at' => now(),
                     ]);
+
+                notify()->success('Stock updated successfully.');
+
                 return redirect()->back()->with('success', 'Stock updated successfully.');
             }
         } else {

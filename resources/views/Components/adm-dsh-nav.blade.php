@@ -51,9 +51,14 @@
         else if (isLightOrAuto && !html.classList.contains('light')) html.classList.add('light');
     </script>
 
+    @notifyCss
+
     <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
 </head>
 <body class="bg-gray-50">
+
+<x-notify::notify />
+        @notifyJs
 
 <!-- ========== HEADER ========== -->
 <header class="sticky top-0 inset-x-0 flex flex-wrap md:justify-start md:flex-nowrap z-[48] w-full bg-white border-b text-sm py-2.5 lg:ps-[260px]">
