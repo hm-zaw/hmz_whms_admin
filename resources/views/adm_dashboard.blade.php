@@ -22,59 +22,66 @@
             @endforeach
         </div>
 
-        <!-- Monthly Data & Predictions -->
-        <div class="bg-white shadow-lg rounded-lg p-8 mt-6">
-            <h1 class="text-center text-3xl font-extrabold text-black mb-6 tracking-wide bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 rounded-lg shadow-md animate__animated animate__fadeInDown">
-                📊 Monthly Data & Predictions
-            </h1>
+        <div class="container mx-auto p-4">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 justify-center w-full">
-                <!-- First Chart Container -->
-                <div class="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md transform transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg cursor-pointer">
-                    <h2 class="text-center text-xl font-semibold text-black mb-4 p-3 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-md shadow">
-                        Record vs Prediction
-                    </h2>
-                    <div class="chart-container w-full">
-                        <canvas id="myChart" class="w-full h-[250px] md:h-[300px] lg:h-[350px]"></canvas>
+            <div class="grid grid-cols-1 gap-6">
+                <div class="flex flex-wrap bg-white p-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <!-- First Chart Container (Record vs Prediction) -->
+                    <div class="w-full md:w-1/2 p-2">
+                        <div class="chart-container w-full mt-10">
+                            <div id="container" class="w-full h-[350px] rounded-lg shadow-inner bg-gray-100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Second Chart Container (Customer Shops) -->
+                    <div class="w-full md:w-1/2 p-2">
+                        <div class="chart-container w-full mt-10">
+                            <div id="myChart2" class="w-full h-[350px] rounded-lg shadow-inner bg-gray-100"></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Second Chart Container -->
-                <div class="flex flex-col items-center bg-gray-100 p-6 rounded-lg shadow-md transform transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg cursor-pointer">
-                    <h2 class="text-center text-xl font-semibold text-black mb-4 p-3 bg-gradient-to-r from-green-400 to-blue-500 rounded-md shadow">
-                        Customer Shops
-                    </h2>
-                    <div class="chart-container w-full">
-                        <canvas id="myChart2" class="w-full h-[250px] md:h-[300px] lg:h-[350px]"></canvas>
-                    </div>
+                <!-- Hourly Chart -->
+                <div class="bg-white p-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <div id="salesContainer" class="w-full h-[400px] mt-4 rounded-lg shadow-inner bg-gray-100"></div>
+                </div>
+
+                <!-- Your Monthly Sales Chart -->
+                <div class="bg-white p-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <div id="monthSalesContainer" class="w-full h-[400px] mt-4 rounded-lg shadow-inner bg-gray-100"></div>
+                </div>
+
+                <!-- Daily Sales Line Chart -->
+                <div class="bg-white p-4 rounded-lg shadow-md transition-transform transform hover:scale-105">
+                    <div id="dailySalesContainer" class="w-full h-[400px] mt-4 rounded-lg shadow-inner bg-gray-100"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Stock Report Download -->
-        <div class="mt-8 bg-white p-6 rounded-lg shadow-md text-center">
-            <h2 class="text-2xl font-semibold text-indigo-600">Stock Report</h2>
-            <p class="text-gray-600">Download the latest stock report in CSV format.</p>
-            <form action="{{ route('stock.downloadCSV') }}" method="get" class="mt-4">
-                @csrf
-                <div class="flex flex-col md:flex-row justify-center gap-4">
-                    <input type="date" name="start_date" class="p-2 border rounded-md">
-                    <input type="date" name="end_date" class="p-2 border rounded-md">
+        <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Stock Report Download -->
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold text-indigo-600 mb-2">Stock Report</h2>
+                    <p class="text-gray-600 mb-4">Download the latest stock report in CSV format.</p>
+                    <form action="{{ route('stock.downloadCSV') }}" method="get">
+                        @csrf
+                        <div class="flex flex-col md:flex-row justify-center gap-4 mb-4">
+                            <input type="date" name="start_date" class="p-2 border border-gray-300 rounded-md">
+                            <input type="date" name="end_date" class="p-2 border border-gray-300 rounded-md">
+                        </div>
+                        <button type="submit" class="px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition-transform transform hover:scale-105">Download CSV</button>
+                    </form>
                 </div>
-                <button type="submit" class="mt-4 px-6 py-3 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition">Download CSV</button>
-            </form>
-        </div>
 
-        <!-- View Stock Report Analyzer -->
-        <div class="mt-8 bg-white p-6 rounded-lg shadow-md text-center">
-            <h2 class="text-2xl font-semibold text-indigo-600">Report Analyzer</h2>
-            <p class="text-gray-600 mt-5">One Click Will Solve All the Reports 🔊</p>
-                <!-- Button to open the modal -->
-                <div class="text-center mt-6 mb-6">
-                    <button id="openModalBtn" class="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600">
-                        View Stock Analyzer
-                    </button>
+                <!-- View Stock Report Analyzer -->
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold text-indigo-600 mb-2">Report Analyzer</h2>
+                    <p class="text-gray-600 mb-4">One Click Will Solve All the Reports 🔊</p>
+                    <p class="text-gray-600 mb-4">Just One Click to Analyze All The Stocks & View Your Stocks</p>
+                    <button type="submit" id="openModalBtn" class="px-6 py-3 mt-5 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition-transform transform hover:scale-105">View Stock Analyzer</button>
                 </div>
+            </div>
         </div>
 
         <!-- Modal Structure -->
@@ -164,6 +171,9 @@
     }
 </script>
 
+<!-- Highcharts Script -->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
 <script>
     // Pass PHP data to JavaScript for Chart 1
     // Pass PHP data to JavaScript
@@ -174,187 +184,183 @@
     console.log(labels, salesData, predictionData); // Debugging: Check if data is correct
 
     // Chart.js Integration
-    const ctx1 = document.getElementById('myChart').getContext('2d');
-    new Chart(ctx1, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Monthly Sales (MMK)',
-                    data: salesData,
-                    borderColor: 'rgba(54, 162, 235, 1)', // Blue color with transparency
-                    borderWidth: 3,
-                    fill: 'origin', // Add shading under the line
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)', // Light blue fill under the line
-                    lineTension: 0.3, // Smooth curve for the sales line
-                    pointRadius: 5, // Larger points for better visibility
-                    pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Points matching the line color
-                    pointHoverBackgroundColor: 'rgba(54, 162, 235, 0.7)', // Hover effect
-                    pointHoverRadius: 8, // Larger hover points
-                    hoverBorderColor: 'rgba(54, 162, 235, 0.8)', // Hover border
-                    hoverBorderWidth: 2 // Border width on hover
-                },
-                {
-                    label: 'Predicted Sales (MMK)',
-                    data: predictionData.map(item => item.prediction), // Map predictions to data points
-                    borderColor: 'rgba(255, 99, 132, 1)', // Red color with transparency
-                    borderWidth: 3,
-                    fill: 'origin', // Add shading under the line
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)', // Light red fill under the line
-                    borderDash: [5, 5], // Dashed line style
-                    lineTension: 0.3, // Smooth curve for prediction line
-                    pointRadius: 5, // Larger points for better visibility
-                    pointBackgroundColor: 'rgba(255, 99, 132, 1)', // Points matching the prediction line color
-                    pointHoverBackgroundColor: 'rgba(255, 99, 132, 0.7)', // Hover effect
-                    pointHoverRadius: 8, // Larger hover points
-                    hoverBorderColor: 'rgba(255, 99, 132, 0.8)', // Hover border
-                    hoverBorderWidth: 2 // Border width on hover
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top', // Legend placed on top of the chart
-                    labels: {
-                        boxWidth: 20, // Smaller boxes for the legend
-                        font: {
-                            size: 14, // Increase font size for better visibility
-                            weight: 'bold' // Make the font weight bold for emphasis
-                        },
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background for tooltips
-                    titleFont: {
-                        weight: 'bold',
-                        size: 14
-                    },
-                    bodyFont: {
-                        size: 12
-                    },
-                    callbacks: {
-                        title: function(tooltipItem) {
-                            return 'Month: ' + tooltipItem[0].label; // Customize tooltip title
-                        },
-                        label: function(tooltipItem) {
-                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw.toLocaleString(); // Format the number
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 500, // Set step size for better spacing on the Y-axis
-                        maxTicksLimit: 10, // Limit the number of ticks on Y-axis
-                        font: {
-                            size: 12 // Font size for ticks
-                        },
-                        callback: function(value) {
-                            return value.toLocaleString(); // Add comma separator for large numbers
-                        }
-                    },
-                    grid: {
-                        color: 'rgba(200, 200, 200, 0.5)', // Light grid lines for better UI
-                        lineWidth: 1,
-                        display: false // Disable horizontal grid lines (Y-axis grid lines)
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(200, 200, 200, 0.5)', // Light grid lines for better UI
-                        lineWidth: 1
-                    },
-                    ticks: {
-                        font: {
-                            size: 12 // Font size for ticks on X-axis
-                        }
-                    }
-                }
-            },
-            elements: {
-                line: {
-                    tension: 0.4, // Smooth lines
-                },
-                point: {
-                    radius: 5, // Increase radius for points
+    Highcharts.chart('container', {
+        chart: {
+            type: 'spline',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            borderRadius: 8,
+            borderWidth: 0,
+            plotBackgroundColor: 'rgba(255, 255, 255, 0.9)',
+            plotBorderColor: '#fff',
+            plotBorderWidth: 2,
+            events: {
+                render: function () {
+                    // Apply a smooth hover effect on chart elements
+                    const chart = this;
+                    const elements = chart.series[0].points;
+                    elements.forEach((el) => {
+                        el.graphic.element.style.transition = 'all 0.3s ease';
+                        el.graphic.element.addEventListener('mouseover', function () {
+                            el.graphic.element.style.transform = 'scale(1.1)';
+                        });
+                        el.graphic.element.addEventListener('mouseout', function () {
+                            el.graphic.element.style.transform = 'scale(1)';
+                        });
+                    });
                 }
             }
-        }
+        },
+        title: {
+            text: 'Yearly Sales',
+        },
+        subtitle: {
+            text: 'Comparison Between Last Year & This Year',
+        },
+        xAxis: {
+            categories: @json($labels),
+            labels: {
+                style: {
+                    fontSize: '12px',
+                    color: '#555'
+                }
+            },
+            gridLineWidth: 1,
+            gridLineColor: '#eaeaea'
+        },
+        yAxis: {
+            title: {
+                text: 'Sales (MMK)',
+                style: {
+                    color: '#333',
+                    fontSize: '14px'
+                }
+            },
+            labels: {
+                style: {
+                    fontSize: '12px',
+                    color: '#555'
+                }
+            },
+            gridLineWidth: 1,
+            gridLineColor: '#eaeaea'
+        },
+        tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            borderColor: '#fff',
+            borderWidth: 1,
+            style: {
+                color: '#fff',
+                fontSize: '12px',
+                fontWeight: 'bold'
+            },
+            pointFormat: '{series.name}: <b>{point.y:,.0f}</b>',
+            shared: true
+        },
+        plotOptions: {
+            series: {
+                marker: {
+                    radius: 5,
+                    lineColor: '#fff',
+                    lineWidth: 2
+                },
+                states: {
+                    hover: {
+                        marker: {
+                            radius: 7
+                        }
+                    }
+                }
+            },
+            line: {
+                lineWidth: 3,
+                shadow: true
+            },
+            area: {
+                fillOpacity: 0.2
+            }
+        },
+        series: [
+            {
+                name: 'Monthly Sales',
+                data: @json($data),
+                color: '#36A2EB', // Blue color for the line
+                fillOpacity: 0.2, // Shading under the line
+                zIndex: 1, // Ensure shading is under the line
+                type: 'area', // Enable area chart for shading
+            },
+            {
+                name: 'Predicted Sales',
+                data: @json($predictions).map(item => item.prediction),
+                color: '#FF6384', // Red color for the line
+                dashStyle: 'Dash',
+                fillOpacity: 0.2, // Shading under the line
+                zIndex: 1, // Ensure shading is under the line
+                type: 'area', // Enable area chart for shading
+            }
+        ]
     });
+</script>
 
-    // Chart 2 - Shop-based Sales Chart
-    const chartData2 = {
-        labels: @json($shopLabels), // Shop names
-        data: @json($shopData) // Quantities sold by each shop
+<script>
+    const dataPrevMonth = {
+        labels: @json($shopLabelsPrevMonth), // Shop names for the previous month
+        data: @json($shopDataValuesPrevMonth) // Quantities sold by each shop in the previous month
     };
 
-    const ctx2 = document.getElementById('myChart2').getContext('2d');
-    new Chart(ctx2, {
-        type: 'bar', // Bar chart for shop sales
-        data: {
-            labels: chartData2.labels, // Shop names
-            datasets: [{
-                label: 'Buying Count',
-                data: chartData2.data, // Buying count per shop
-                backgroundColor: 'rgba(75, 192, 192, 0.6)', // Custom bar color
-                borderColor: 'rgba(75, 192, 192, 1)', // Border color for the bars
-                borderWidth: 1, // Border width for the bars
-            }]
+    const dataCurrMonth = {
+        labels: @json($shopLabelsCurrMonth), // Shop names for the current month
+        data: @json($shopDataValuesCurrMonth) // Quantities sold by each shop in the current month
+    };
+
+    const getChartData = (labels, data, color) => {
+        return labels.map((label, index) => ({
+            name: label,
+            y: data[index],
+            color: color
+        }));
+    };
+
+    const chart = Highcharts.chart('myChart2', {
+        chart: {
+            type: 'column'
         },
-        options: {
-            responsive: true, // Make the chart responsive to screen size
-            maintainAspectRatio: false, // Allow the chart to stretch to container size
-            scales: {
-                x: {
-                    ticks: {
-                        font: { size: 14, weight: 'bold' }, // Customize font size for x-axis labels
-                        maxRotation: 45, // Rotate x-axis labels if needed
-                        minRotation: 30, // Adjust for better readability
-                    },
-                    grid: {
-                        display: false // Hide gridlines for x-axis
-                    }
-                },
-                y: {
-                    beginAtZero: true, // Start y-axis at 0
-                    ticks: {
-                        font: { size: 14, weight: 'bold' }, // Customize font size for y-axis labels
-                        stepSize: 10, // Control the interval between y-axis ticks
-                    },
-                    grid: {
-                        display: true, // Display gridlines for y-axis
-                        color: '#e0e0e0', // Light gridline color
-                    }
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top', // Position the legend at the top
-                    labels: {
-                        font: { size: 14, weight: 'bold' }, // Customize legend font
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        title: (tooltipItem) => 'Shop: ' + tooltipItem[0].label, // Tooltip title
-                        label: (tooltipItem) => 'Buying Count: ' + tooltipItem.raw, // Tooltip label with the value
-                    }
-                }
-            },
-            layout: {
-                padding: {
-                    left: 20, // Add padding for better spacing
-                    right: 20,
-                    top: 20,
-                    bottom: 20
-                }
+        title: {
+            text: 'Shop-based Sales Comparison'
+        },
+        subtitle: {
+            text: 'Comparison of sales between the previous month and the current month'
+        },
+        xAxis: {
+            categories: dataCurrMonth.labels,
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Buying Count'
             }
-        }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Previous Month',
+            data: getChartData(dataPrevMonth.labels, dataPrevMonth.data, 'rgba(75, 192, 192, 0.6)')
+        }, {
+            name: 'Current Month',
+            data: getChartData(dataCurrMonth.labels, dataCurrMonth.data, 'rgba(54, 162, 235, 0.6)')
+        }]
     });
 </script>
 
@@ -402,5 +408,281 @@
             }
         }, stepTime);
     }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var salesHours = @json($salesHours);
+        var salesValues = @json($salesValues);
+        var maxSale = @json($maxSale);
+        var maxSaleHour = @json($maxSaleHour);
+
+        // Convert sales data to Highcharts format
+        var salesData = salesHours.map((hour, index) => ({
+            x: parseInt(hour),
+            y: salesValues[index]
+        }));
+
+        // Find index of peak sales hour
+        var peakIndex = salesHours.indexOf(maxSaleHour);
+
+        Highcharts.chart('salesContainer', {
+            chart: {
+                type: 'area',
+                zooming: {
+                    type: 'x'
+                },
+                panning: true,
+                panKey: 'shift',
+                scrollablePlotArea: {
+                    minWidth: 600
+                }
+            },
+
+            title: {
+                text: 'Hourly Chart'
+            },
+            subtitle: {
+                text: 'Hourly Sales Trend for Today',
+            },
+            xAxis: {
+                categories: salesHours.map(h => h + ':00'),
+                title: {
+                    text: 'Time (Hours)'
+                }
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Sales (MMK)'
+                },
+                labels: {
+                    format: '{value} MMK'
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<b>Hour: {point.key}</b><br>',
+                pointFormat: 'Sales: {point.y} MMK'
+            },
+
+            series: [{
+                name: 'Sales',
+                data: salesData,
+                lineColor: '#FF5733', // Highlight line color
+                color: 'rgba(255, 87, 51, 0.5)', // Transparent fill
+                fillOpacity: 0.5,
+                marker: {
+                    enabled: true,
+                    symbol: 'circle'
+                },
+                threshold: null
+            }],
+
+            annotations: [{
+                draggable: '',
+                labelOptions: {
+                    backgroundColor: 'rgba(255,255,255,0.8)',
+                    verticalAlign: 'top',
+                    y: 10
+                },
+                labels: [{
+                    point: {
+                        xAxis: 0,
+                        yAxis: 0,
+                        x: peakIndex,
+                        y: maxSale
+                    },
+                    text: '📍 Peak Hour: ' + maxSaleHour + ':00 (' + maxSale.toLocaleString() + ' MMK)'
+                }]
+            }]
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Data passed from controller
+        var months = @json($months); // Months like "Jan", "Feb", etc.
+        var salesValues = @json($monthlySales); // Monthly sales values
+        var maxSale = @json($maxSale); // Maximum sale value
+        var maxSaleMonth = @json($maxSaleMonth); // Peak month
+
+        // Convert sales data to Highcharts format
+        var salesData = months.map((month, index) => ({
+            x: index,
+            y: salesValues[index]
+        }));
+
+        // Find index of peak sales month
+        var peakIndex = months.indexOf(maxSaleMonth);
+
+        Highcharts.chart('monthSalesContainer', {
+            chart: {
+                type: 'column',
+                zooming: {
+                    type: 'x'
+                },
+                panning: true,
+                panKey: 'shift',
+                scrollablePlotArea: {
+                    minWidth: 600
+                }
+            },
+
+            title: {
+                text: 'Monthly Sales Chart'
+            },
+            subtitle: {
+                text: 'Monthly Sales Trend for 2024',
+            },
+            xAxis: {
+                categories: months, // Using months like "Jan", "Feb", etc.
+                title: {
+                    text: 'Month'
+                }
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Sales (MMK)'
+                },
+                labels: {
+                    format: '{value} MMK'
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<b>Month: {point.key}</b><br>',
+                pointFormat: 'Sales: {point.y} MMK'
+            },
+
+            series: [{
+                name: 'Sales',
+                data: salesData,
+                color: '#028391', // Highlight column color
+                fillOpacity: 0.5,
+                marker: {
+                    enabled: true,
+                    symbol: 'circle'
+                },
+                threshold: null
+            }],
+
+            annotations: [{
+                draggable: '',
+                labelOptions: {
+                    backgroundColor: 'rgba(255,255,255,0.8)',
+                    verticalAlign: 'top',
+                    y: 10
+                },
+                labels: [{
+                    point: {
+                        xAxis: 0,
+                        yAxis: 0,
+                        x: peakIndex,
+                        y: maxSale
+                    },
+                    text: '📍 Peak Month: ' + maxSaleMonth + ' (' + maxSale.toLocaleString() + ' MMK)'
+                }]
+            }]
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var days = @json($days); // Days in the month
+        var salesValues = @json($dailySales); // Daily sales values
+        var maxSale = @json($maxSale); // Maximum sale value
+        var maxSaleDay = @json($maxSaleDay); // Peak day
+
+        // Ensure all 31 days are represented (or adjust for the correct month days)
+        var allSalesData = [];
+        for (var i = 1; i <= 31; i++) {
+            var day = i.toString().padStart(2, '0'); // Format day as '01', '02', etc.
+            var salesIndex = days.indexOf(day);
+
+            // If sales data for the day exists, use it; otherwise, use 0
+            allSalesData.push({
+                x: i - 1, // x-axis position
+                y: salesIndex !== -1 ? salesValues[salesIndex] : 0 // Sales or 0 if no data
+            });
+        }
+
+        // Find index of peak sales day
+        var peakIndex = days.indexOf(maxSaleDay);
+
+        Highcharts.chart('dailySalesContainer', {
+            chart: {
+                type: 'area', // Change type to 'area' for shaded region
+                zooming: {
+                    type: 'x'
+                },
+                panning: true,
+                panKey: 'shift',
+                scrollablePlotArea: {
+                    minWidth: 600
+                }
+            },
+
+            title: {
+                text: 'Daily Sales Chart'
+            },
+            subtitle: {
+                text: 'Sales Trend for January 2024',
+            },
+            xAxis: {
+                categories: Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')), // Days of the month
+                title: {
+                    text: 'Day of the Month'
+                }
+            },
+
+            yAxis: {
+                title: {
+                    text: 'Sales (MMK)'
+                },
+                labels: {
+                    format: '{value} MMK'
+                }
+            },
+
+            tooltip: {
+                headerFormat: '<b>Day: {point.key}</b><br>',
+                pointFormat: 'Sales: {point.y} MMK'
+            },
+
+            series: [{
+                name: 'Sales',
+                data: allSalesData,
+                color: '#08314a', // Line color
+                fillColor: 'rgba(51, 161, 255, 0.2)', // Shaded area color (light blue)
+                marker: {
+                    enabled: true,
+                    symbol: 'circle'
+                },
+                lineWidth: 2
+            }],
+
+            annotations: [{
+                draggable: '',
+                labelOptions: {
+                    backgroundColor: 'rgba(255,255,255,0.8)',
+                    verticalAlign: 'top',
+                    y: 10
+                },
+                labels: [{
+                    point: {
+                        xAxis: 0,
+                        yAxis: 0,
+                        x: peakIndex,
+                        y: maxSale
+                    },
+                    text: '📍 Peak Day: ' + maxSaleDay + ' (' + maxSale.toLocaleString() + ' MMK)'
+                }]
+            }]
+        });
+    });
 </script>
 

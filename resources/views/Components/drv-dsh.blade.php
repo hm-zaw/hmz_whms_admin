@@ -2,6 +2,8 @@
 <!doctype html>
 <html lang="en">
 <head>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Required Meta Tags Always Come First -->
     <meta charset="utf-8">
     <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -26,7 +28,7 @@
     <meta property="og:image" content="https://preline.co/assets/img/og-image.png">
 
     <!-- Title -->
-    <title> Pouk Sa | Admin </title>
+    <title> Pouk Sa | Delivery Man Dashboard </title>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -53,9 +55,106 @@
 
     <link rel="stylesheet" href="https://preline.co/assets/css/main.min.css">
 </head>
-<body class="h-screen overflow-hidden flex items-center justify-center" style="background: #edf2f7;">
+<body class="bg-gray-50">
 <div class="container mx-auto">
     {{ $slot }} <!-- Content is injected here -->
 </div>
+
+<script>
+    let currentDeliveryIndex = null;
+    let currentDeliveryId = null;
+    let csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    function openFirstModal(index, name, address, phone, deliveryId) {
+        document.getElementById('invoiceDetails').innerText = `Invoice No: ${index + 1} | ${name} - ${address}`;
+        document.getElementById('messageBox').value = `Your order is on the way. Delivery will be made shortly. If you need to contact the driver, please call: ${phone}.`;
+        currentDeliveryIndex = index;
+        currentDeliveryId = deliveryId;
+        document.getElementById('firstModal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('firstModal').classList.remove('active');
+    }
+
+    //Send Messages
+    function confirmPhone() {
+        alert('Phone number confirmed!');
+    }
+
+    function sendMessage() {
+        const message = document.getElementById('messageBox').value;
+        console.log('sendMessage function called');
+
+        // Get CSRF token from the meta tag
+        console.log("CSRF Token:", csrfToken);
+
+        fetch("{{ route('update.delivery.status') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": csrfToken
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify({ id: currentDeliveryId })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    // Update UI on successful status change
+                    document.getElementById('status-' + currentDeliveryIndex).innerText = "Sent";
+                    document.getElementById('status-' + currentDeliveryIndex).classList.replace('bg-red-500', 'bg-green-500');
+                    const sendButton = document.getElementById('btn-' + currentDeliveryIndex);
+                    sendButton.disabled = true;
+                    sendButton.classList.add('cursor-not-allowed');
+                    showToast("Message sent successfully!");
+                } else {
+                    // Show detailed error message from backend
+                    alert("Error: " + (data.message || "Failed to update status. Please try again later."));
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An unexpected error occurred. Please try again later.");
+            });
+
+        closeModal();
+    }
+
+    // function sendMessage() {
+    //     const message = document.getElementById('messageBox').value;
+    //     console.log('sendMessage function called');
+    //     console.log("Message:", message);
+    //
+    //     // Disable the button when clicked to prevent multiple submissions
+    //     const sendButton = document.getElementById('btn-' + currentDeliveryIndex);
+    //     sendButton.disabled = true;
+    //     sendButton.classList.add('cursor-not-allowed'); // Optionally change appearance of the button
+    //
+    //     // Simulate sending a request and receiving a response
+    //     setTimeout(() => {
+    //         // Simulate a successful response from the "backend"
+    //         const data = { success: true };
+    //
+    //         if (data.success) {
+    //             document.getElementById('status-' + currentDeliveryIndex).innerText = "Sent";
+    //             document.getElementById('status-' + currentDeliveryIndex).classList.replace('bg-red-500', 'bg-green-500');
+    //             showToast("Message sent successfully!");
+    //         } else {
+    //             alert("Failed to update status.");
+    //         }
+    //     }, 1000); // Simulate network delay
+    //
+    //     closeModal();
+    // }
+
+    function showToast(message) {
+        const toast = document.getElementById('toastMessage');
+        toast.innerText = message;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 2000);
+    }
+</script>
 </body>
 </html>

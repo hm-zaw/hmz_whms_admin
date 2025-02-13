@@ -17,4 +17,8 @@ class SystemUser extends Model
         'phone',
     ];
 
+//    public function getAuthPassword(){
+//        return$this->password;
+//    }
+
 }
