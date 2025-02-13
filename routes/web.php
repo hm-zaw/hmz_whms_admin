@@ -83,3 +83,8 @@ Route::get('/driver_dashboard', function () {
 // System Notification Route
 Route::get('/system_notification', [SystemNotificationController::class, 'index'])->name('system.notification');
 
+// Track Deliveries Route
+Route::get('/track_deliveries', function () {
+    return view('track_deliveries');
+});
+
