@@ -144,7 +144,7 @@ const MapComponent: React.FC = () => {
     // Add new state for algorithm stats minimized
     const [isAlgoStatsMinimized, setIsAlgoStatsMinimized] = useState(false);
 
-    // Add new state for selected driver  
+    // Add new state for selected driver
     const [selectedDriverName, setSelectedDriverName] = useState<string | null>(null);
 
     // Add new state for animation
@@ -159,16 +159,19 @@ const MapComponent: React.FC = () => {
         const handleInvoiceSearch = (event: CustomEvent) => {
             const searchedInvoice = event.detail.invoiceNumber;
 
+            console.log("Searching for invoice:", searchedInvoice); // Debugging log
+
             // Find delivery that contains the searched invoice
             const matchingDelivery = deliveries.find(delivery =>
-                delivery.invoiceNum.includes(searchedInvoice)
+                delivery.invoiceNum.some(invoice => invoice.toString().includes(searchedInvoice)) // Convert to string to prevent type mismatches
             );
 
             if (matchingDelivery) {
+                console.log("Found matching delivery:", matchingDelivery);
                 setFilteredDeliveryId(matchingDelivery.id);
-                // Calculate route only for the matching delivery
-                // calculateFilteredDeliveryRoute(matchingDelivery);
+                calculateFilteredDeliveryRoute(matchingDelivery); // Call the function to calculate the route
             } else {
+                console.warn("No delivery found for invoice:", searchedInvoice);
                 setFilteredDeliveryId(null);
                 setDeliveryRoutes({});
                 setRouteInfos([]);
@@ -176,14 +179,66 @@ const MapComponent: React.FC = () => {
             }
         };
 
-        // Add event listener
         window.addEventListener('invoiceSearch', handleInvoiceSearch as EventListener);
 
-        // Cleanup
         return () => {
             window.removeEventListener('invoiceSearch', handleInvoiceSearch as EventListener);
         };
-    }, [deliveries]); // Add any other dependencies if needed
+    }, [deliveries]);
+
+    const calculateFilteredDeliveryRoute = async (delivery: Delivery) => {
+        setIsLoading(true);
+        try {
+            const deliveryRoutesMap: { [key: number]: [number, number][] } = {};
+            const routeInformation: RouteInfo[] = [];
+
+            // Construct coordinates string for OSRM trip endpoint
+            let coordinates = `${delivery.lng},${delivery.lat}`;
+            const reportsForDelivery = reports.filter(report => {
+                return delivery.invoiceNum.some(invoiceNum =>
+                    report.invoiceNum.toString().includes(invoiceNum.toString())
+                );
+            });
+
+            if (reportsForDelivery.length === 0) {
+                alert('No delivery points found for this invoice.');
+                setIsLoading(false);
+                return;
+            }
+
+            reportsForDelivery.forEach(report => {
+                coordinates += `;${report.lng},${report.lat}`;
+            });
+
+            const response = await axios.get(
+                `https://router.project-osrm.org/trip/v1/driving/${coordinates}?roundtrip=true&source=first`
+            );
+
+            if (response.data.trips && response.data.trips.length > 0) {
+                deliveryRoutesMap[delivery.id] = decodePolyline(response.data.trips[0].geometry);
+                routeInformation.push({
+                    deliveryId: delivery.id,
+                    shopName: delivery.shopName[0],
+                    totalTime: Math.round(response.data.trips[0].duration / 60),
+                    reports: reportsForDelivery.map(r => ({
+                        description: r.description,
+                        distance: calculateDistance(delivery.lat, delivery.lng, r.lat, r.lng)
+                    }))
+                });
+
+                setDeliveryRoutes(deliveryRoutesMap);
+                setRouteInfos(routeInformation);
+                setIsInfoMinimized(false);
+            } else {
+                alert('Could not calculate route for this invoice.');
+            }
+        } catch (error) {
+            console.error('Failed to calculate delivery route:', error);
+            alert('Failed to calculate delivery route. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Handle user location
     const getDeliveryGroup = (deliveryId: number): number => {
@@ -207,24 +262,7 @@ const MapComponent: React.FC = () => {
         api.getDeliveries().then((res) => setDeliveries(res.data));
     }, []);
 
-    // Add event listener for driver selection
-    useEffect(() => {
-        const handleDriverSelect = (event: CustomEvent) => {
-            const driverName = event.detail.driverName;
-            setSelectedDriverName(driverName || null);
 
-            // Clear existing routes when driver changes
-            setRouteSegments([]);
-            setOptimizedWaypoints([]);
-            setTotalTravelTime(null);
-        };
-
-        window.addEventListener('driverSelect', handleDriverSelect as EventListener);
-
-        return () => {
-            window.removeEventListener('driverSelect', handleDriverSelect as EventListener);
-        };
-    }, []);
 
     // Modify calculateOptimizedRoute to show driver card
     const calculateOptimizedRoute = async () => {
@@ -614,7 +652,7 @@ const MapComponent: React.FC = () => {
             const deltaLng = (result & 1) ? ~(result >> 1) : (result >> 1);
             lng += deltaLng;
 
-            // IMPORTANT: OSRM returns coordinates as [longitude, latitude]. 
+            // IMPORTANT: OSRM returns coordinates as [longitude, latitude].
             // Leaflet requires them in [latitude, longitude] order.
             // Swap the order here.
             coordinates.push([lat * 1e-5, lng * 1e-5]);
@@ -650,25 +688,18 @@ const MapComponent: React.FC = () => {
                             onClick={handleGetUserLocation}
                             className="px-4 py-2 bg-white text-gray-700 rounded-md shadow-md hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2 border border-gray-200"
                         >
-                            📍 Get Location
+                            📍 Get Driver Location
                         </button>
 
                         {userLocation && (
                             <>
-                                <button
-                                    onClick={calculateOptimizedRoute}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition-colors duration-200 flex items-center gap-2"
-                                    disabled={isLoading}
-                                >
-                                    {isLoading ? '⏳ Calculating...' : '�� Calculate Route'}
-                                </button>
 
                                 <button
                                     onClick={calculateDeliveryRoutes}
                                     className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 transition-colors duration-200 flex items-center gap-2"
                                     disabled={isLoading}
                                 >
-                                    {isLoading ? '⏳ Processing...' : '🚚 Calculate Delivery Routes'}
+                                    {isLoading ? '⏳ Processing...' : '🚚 Show Delivery Routes'}
                                 </button>
                             </>
                         )}
